@@ -1,6 +1,6 @@
-import { Container } from "@/components/Container";
-import { Card } from "@/components/ui/Card";
-import { Button } from "@/components/ui/Button";
+import { Container } from "@/src/components/Container";
+import { Card } from "@/src/components/ui/Card";
+import { Button } from "@/src/components/ui/Button";
 
 const devoirs = [
   {

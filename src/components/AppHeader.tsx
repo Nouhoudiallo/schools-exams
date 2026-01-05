@@ -1,5 +1,5 @@
-import { Container } from "@/components/Container";
-import { Button } from "@/components/ui/Button";
+import { Container } from "@/src/components/Container";
+import { Button } from "@/src/components/ui/Button";
 
 export function AppHeader() {
   return (

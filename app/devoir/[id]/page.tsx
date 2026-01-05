@@ -1,5 +1,5 @@
-import { Container } from "@/components/Container";
-import { Card } from "@/components/ui/Card";
+import { Container } from "@/src/components/Container";
+import { Card } from "@/src/components/ui/Card";
 
 export default async function DevoirPage({
   params,
