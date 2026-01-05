@@ -1,0 +1,116 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+
+enum UserRole {
+  PROF
+  STUDENT
+}
+
+enum InvitationStatus {
+  PENDING
+  STARTED
+  SUBMITTED
+  EXPIRED
+}
+
+model User {
+  id        String    @id @default(cuid())
+  name      String
+  email     String    @unique
+  role      UserRole
+  createdAt DateTime  @default(now())
+
+  // Relations
+  schools       School[]        @relation("SchoolOwner")
+  enrollments   Enrollment[]
+  invitations   ExamInvitation[]
+  submissions   ExamSubmission[]
+}
+
+model School {
+  id        String   @id @default(cuid())
+  name      String
+  ownerId  String
+  createdAt DateTime @default(now())
+
+  owner     User     @relation("SchoolOwner", fields: [ownerId], references: [id])
+  classes   Class[]
+}
+
+model Class {
+  id        String   @id @default(cuid())
+  name      String
+  schoolId  String
+  createdAt DateTime @default(now())
+
+  school      School        @relation(fields: [schoolId], references: [id])
+  enrollments Enrollment[]
+  exams       Exam[]
+}
+
+model Enrollment {
+  id        String   @id @default(cuid())
+  userId    String
+  classId   String
+  createdAt DateTime @default(now())
+
+  user   User  @relation(fields: [userId], references: [id])
+  class  Class @relation(fields: [classId], references: [id])
+
+  @@unique([userId, classId])
+}
+
+model Exam {
+  id        String   @id @default(cuid())
+  title     String
+  pdfUrl    String
+  classId   String
+  startsAt DateTime
+  endsAt   DateTime
+  createdAt DateTime @default(now())
+
+  class        Class            @relation(fields: [classId], references: [id])
+  invitations ExamInvitation[]
+  submissions ExamSubmission[]
+}
+
+model ExamInvitation {
+  id        String            @id @default(cuid())
+  examId   String
+  studentId String
+  token     String            @unique
+  status    InvitationStatus  @default(PENDING)
+  createdAt DateTime          @default(now())
+
+  exam     Exam @relation(fields: [examId], references: [id])
+  student  User @relation(fields: [studentId], references: [id])
+
+  @@unique([examId, studentId])
+}
+
+model ExamSubmission {
+  id          String   @id @default(cuid())
+  examId     String
+  studentId  String
+  content     String   // réponses écrites par l'élève
+  cheatingLog Json?    // événements de triche (focus, blur, etc.)
+  submittedAt DateTime @default(now())
+
+  exam    Exam @relation(fields: [examId], references: [id])
+  student User @relation(fields: [studentId], references: [id])
+
+  @@unique([examId, studentId])
+}

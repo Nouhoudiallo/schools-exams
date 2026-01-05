@@ -1,6 +1,14 @@
+// import { prisma } from "@/src/lib/prisma";
 import Image from "next/image";
 
-export default function Home() {
+export default async function Home() {
+  // const add = await prisma.user.create({
+  //   data: {
+  //     name: "John Doe",
+  //     email: "john.doe@example.com",
+  //   },
+  // });
+  // console.log(add);
   return (
     <div className="bg-red-500">
       <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
